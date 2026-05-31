@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Guards;
+namespace Cartalyst\Sentinel\Guards;
 
 use Illuminate\Auth\SessionGuard;
 use Cartalyst\Sentinel\Sentinel;
