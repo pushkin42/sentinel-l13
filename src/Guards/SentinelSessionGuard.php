@@ -28,7 +28,7 @@ class SentinelSessionGuard extends SessionGuard
     public function login(AuthenticatableContract $user, $remember = false)
     {
         parent::login($user, $remember);
-        return $this->sentinel->login($user, $remember);
+        return ($this->sentinel->login($user, $remember));
     }
 
     public function user()
