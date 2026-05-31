@@ -8,16 +8,28 @@ use Cartalyst\Sentinel\Sentinel;
 class SentinelSessionGuard extends SessionGuard
 {
     protected $sentinel;
-    
+
     public function __construct($name, Sentinel $sentinel, $provider, $session, $request)
     {
         parent::__construct($name, $provider, $session, $request);
         $this->sentinel = $sentinel;
     }
-    
+
+    public function loginUsingId($id, $remember = false)
+    {
+        if (!is_null($user = $this->provider->retrieveById($id))) {
+            $this->login($user, $remember);
+            $this->sentinel->login($user, $remember);
+
+            return $user;
+        }
+
+        return false;
+    }
+
     public function user()
     {
-       $user = parent::user();
+        $user = parent::user();
 
         if ($user && !$this->sentinel->check()) {
             $this->sentinel->login($user);
@@ -27,7 +39,7 @@ class SentinelSessionGuard extends SessionGuard
 
         return $user ?? $this->sentinel->check(false);
     }
-    
+
     public function attempt(array $credentials = [], $remember = false)
     {
         if ($user = $this->sentinel->authenticate($credentials, $remember)) {
