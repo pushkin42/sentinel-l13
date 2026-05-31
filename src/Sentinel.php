@@ -269,11 +269,8 @@ class Sentinel
             if (!$this->cycleCheckpoints('check', $user)) {
                 return false;
             }
-        } else {
-            if (!$user = Auth::guard($authBridgeGuard)->getUser()) {
-                return false;
-            }
 
+        } else {
             if (!$this->cycleCheckpoints('check', $user)) {
                 return false;
             }
@@ -531,6 +528,7 @@ class Sentinel
         $this->fireEvent('sentinel.logged-in', $user);
 
         return $this->user = $user;
+
     }
 
     /**
@@ -736,8 +734,16 @@ class Sentinel
      */
     public function getUser(bool $check = true): ?UserInterface
     {
+
         if (config('cartalyst.sentinel.auth_bridge.enabled')) {
-            return Auth::guard(config('cartalyst.sentinel.auth_bridge.guard'))->user();
+            $guard = config('cartalyst.sentinel.auth_bridge.guard');
+            $defGuard = config('auth.defaults.guard');
+
+            if ($guard === $defGuard) {
+                // если мост настроен уже на Sentinel, можно отдать напрямую
+                return $this->check($check);
+            }
+            return Auth::guard($guard)->user();
         }
 
         if ($check && $this->user === null) {
