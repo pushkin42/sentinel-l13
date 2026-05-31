@@ -36,7 +36,7 @@ interface PersistenceRepositoryInterface
      *
      * @param string $code
      *
-     * @return \Cartalyst\Sentinel\Persistences\PersistenceInterface|null
+     * @return PersistenceInterface|null
      */
     public function findByPersistenceCode(string $code): ?PersistenceInterface;
 
@@ -45,15 +45,15 @@ interface PersistenceRepositoryInterface
      *
      * @param string $code
      *
-     * @return \Cartalyst\Sentinel\Users\UserInterface|null
+     * @return UserInterface|null
      */
     public function findUserByPersistenceCode(string $code): ?UserInterface;
 
     /**
      * Adds a new user persistence to the current session and attaches the user.
      *
-     * @param \Cartalyst\Sentinel\Persistences\PersistenceInterface $persistable
-     * @param bool                                                  $remember
+     * @param PersistenceInterface $persistable
+     * @param bool $remember
      *
      * @return bool|null
      */
@@ -62,7 +62,7 @@ interface PersistenceRepositoryInterface
     /**
      * Adds a new user persistence, to remember.
      *
-     * @param \Cartalyst\Sentinel\Persistences\PersistableInterface $persistable
+     * @param PersistableInterface $persistable
      *
      * @return bool
      */
@@ -87,10 +87,12 @@ interface PersistenceRepositoryInterface
     /**
      * Flushes persistences for the given user.
      *
-     * @param \Cartalyst\Sentinel\Persistences\PersistableInterface $persistable
-     * @param bool                                                  $forget
+     * @param PersistableInterface $persistable
+     * @param bool $forget
      *
      * @return void
      */
     public function flush(PersistableInterface $persistable, bool $forget = true): void;
+
+    public function getPersistenceCodeFor(UserInterface $user): string;
 }
