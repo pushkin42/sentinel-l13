@@ -19,6 +19,11 @@
  */
 
 return [
+    'auth_bridge' => [
+        'enabled' => true,
+        'guard' => 'sentinel-session',
+    ],
+    
     /*
     |--------------------------------------------------------------------------
     | Session Key
