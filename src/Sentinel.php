@@ -35,6 +35,7 @@ use Cartalyst\Sentinel\Reminders\ReminderRepositoryInterface;
 use Cartalyst\Sentinel\Throttling\ThrottleRepositoryInterface;
 use Cartalyst\Sentinel\Activations\ActivationRepositoryInterface;
 use Cartalyst\Sentinel\Persistences\PersistenceRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class Sentinel
 {
