@@ -47,7 +47,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
      * Constructor.
      *
      * @param string $model
-     * @param int    $expires
+     * @param int $expires
      *
      * @return void
      */
@@ -94,8 +94,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
             ->when($code, function ($query, $code) {
                 return $query->where('code', $code);
             })
-            ->first()
-        ;
+            ->first();
     }
 
     /**
@@ -103,7 +102,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
      */
     public function exists(UserInterface $user, string $code = null): bool
     {
-        return (bool) $this->get($user, $code);
+        return (bool)$this->get($user, $code);
     }
 
     /**
@@ -120,15 +119,14 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
             ->where('code', $code)
             ->where('completed', false)
             ->where('created_at', '>', $expires)
-            ->first()
-        ;
+            ->first();
 
-        if (! $activation) {
+        if (!$activation) {
             return false;
         }
 
         $activation->fill([
-            'completed'    => true,
+            'completed' => true,
             'completed_at' => Carbon::now(),
         ]);
 
@@ -156,7 +154,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
 
         $activation = $this->createModel()->newQuery()->where('user_id', $userId)->where('completed', true)->first();
 
-        if (! $activation) {
+        if (!$activation) {
             return false;
         }
 
@@ -191,5 +189,13 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
     protected function generateActivationCode(): string
     {
         return Str::random(32);
+    }
+
+    public function getActivationCodeFor(UserInterface $user): string
+    {
+        return $this->createModel()->newQuery()
+            ->where('user_id', $user->getUserId())
+            ->whereNotNull('code')
+            ->latest()->first();
     }
 }
