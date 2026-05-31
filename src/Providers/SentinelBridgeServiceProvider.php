@@ -5,7 +5,6 @@ namespace Cartalyst\Sentinel\Providers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
-use Cartalyst\Sentinel\Laravel\Auth\SentinelUserProvider;
 
 class SentinelBridgeServiceProvider extends ServiceProvider
 {
