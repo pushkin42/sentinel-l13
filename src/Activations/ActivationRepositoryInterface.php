@@ -88,5 +88,5 @@ interface ActivationRepositoryInterface
      */
     public function removeExpired(): bool;
 
-    public function getActivationCodeFor(UserInterface $user): string;
+    public function getActivationCodeFor(UserInterface $user): ?string;
 }
