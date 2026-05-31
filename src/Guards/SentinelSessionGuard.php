@@ -2,9 +2,11 @@
 
 namespace Cartalyst\Sentinel\Guards;
 
+use Cartalyst\Sentinel\Users\UserInterface;
 use Illuminate\Auth\SessionGuard;
 use Cartalyst\Sentinel\Sentinel;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Support\Facades\Auth;
 
 class SentinelSessionGuard extends SessionGuard
 {
@@ -51,5 +53,29 @@ class SentinelSessionGuard extends SessionGuard
             return true;
         }
         return false;
+    }
+
+    public function getPersistenceCode(?UserInterface $user = null): null|string
+    {
+        $user = $user ?? $this->user();
+        if (!$user) return null;
+
+        return $this->sentinel->getPersistenceRepository()->getPersistenceCodeFor($user);
+    }
+
+    public function getActivationCode(?UserInterface $user = null): ?string
+    {
+        $user = $user ?? $this->user();
+        if (!$user) return null;
+
+        return $this->sentinel->getActivationRepository()->getActivationCodeFor($user);
+    }
+
+    public function isActivated(?UserInterface $user = null): ?bool
+    {
+        $user = $user ?? $this->user();
+        if (!$user) return null;
+
+        return $this->sentinel->getActivationRepository()->completed($user);
     }
 }
