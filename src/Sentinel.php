@@ -244,6 +244,10 @@ class Sentinel
      */
     public function check()
     {
+        if (config('cartalyst.sentinel.auth_bridge.enabled')) {
+            return Auth::guard(config('cartalyst.sentinel.auth_bridge.guard'))->check();
+        }
+        
         if ($this->user !== null) {
             return $this->user;
         }
@@ -718,6 +722,10 @@ class Sentinel
      */
     public function getUser(bool $check = true): ?UserInterface
     {
+        if (config('cartalyst.sentinel.auth_bridge.enabled')) {
+            return Auth::guard(config('cartalyst.sentinel.auth_bridge.guard'))->user();
+        }
+        
         if ($check && $this->user === null) {
             $this->check();
         }
