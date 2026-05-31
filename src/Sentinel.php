@@ -246,35 +246,28 @@ class Sentinel
      */
     public function check()
     {
-        $authBridgeEnabled = config('cartalyst.sentinel.auth_bridge.enabled', false);
-        $authBridgeGuard = config('cartalyst.sentinel.auth_bridge.guard', 'web');
+//        $authBridgeEnabled = config('cartalyst.sentinel.auth_bridge.enabled', false);
+//        $authBridgeGuard = config('cartalyst.sentinel.auth_bridge.guard', 'web');
 
         if ($this->user !== null) {
             return $this->user;
         }
 
-        if (!$authBridgeEnabled) {
 
-            // Auth пока не умеет в Sentinel-way проверки, добавим позже!
-
-            if (!$code = $this->persistences->check()) {
-                return false;
-            }
-
-            if (!$user = $this->persistences->findUserByPersistenceCode($code)) {
-                return false;
-            }
-
-
-            if (!$this->cycleCheckpoints('check', $user)) {
-                return false;
-            }
-
-        } else {
-            if (!$this->cycleCheckpoints('check', $user)) {
-                return false;
-            }
+        if (!$code = $this->persistences->check()) {
+            return false;
         }
+
+        if (!$user = $this->persistences->findUserByPersistenceCode($code)) {
+            return false;
+        }
+
+
+        if (!$this->cycleCheckpoints('check', $user)) {
+            return false;
+        }
+
+
         return $this->user = $user;
     }
 
