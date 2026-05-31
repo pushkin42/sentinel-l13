@@ -37,7 +37,9 @@ use Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use Cartalyst\Sentinel\Persistences\PersistableInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class EloquentUser extends Model implements PermissibleInterface, PersistableInterface, RoleableInterface, UserInterface
+class EloquentUser extends Model implements
+      PermissibleInterface, PersistableInterface, RoleableInterface, UserInterface,
+      Authenticatable
 {
     use PermissibleTrait;
 
