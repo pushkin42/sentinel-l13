@@ -1,5 +1,5 @@
 {
-    "name": "cartalyst/sentinel",
+    "name": "pushlin42/sentinel",
     "description": "PHP 8.2+ Fully-featured Authentication & Authorization System",
     "keywords": [
         "php",
@@ -14,6 +14,11 @@
             "name": "Cartalyst LLC",
             "email": "help@cartalyst.com",
             "homepage": "https://cartalyst.com"
+        },
+        {
+            "name": "pushkin42",
+            "email": "web@ipsam.ru",
+            "homepage": "https://my.ipsam.ru"
         }
     ],
     "require": {
