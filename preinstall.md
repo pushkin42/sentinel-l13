@@ -21,3 +21,15 @@
                 $app['request']
             );
         });
+- Добавить в конфиг auth.php что-то типа:
+
+            'guards' => [
+                'web' => [
+                    'driver' => 'session',
+                    'provider' => 'users',
+                ],
+                'sentinel-session' => [
+                    'driver' => 'session',
+                    'provider' => 'sentinel',
+                ]
+            ],
