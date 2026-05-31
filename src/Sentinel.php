@@ -129,20 +129,21 @@ class Sentinel
      * Constructor.
      *
      * @param \Cartalyst\Sentinel\Persistences\PersistenceRepositoryInterface $persistences
-     * @param \Cartalyst\Sentinel\Users\UserRepositoryInterface               $users
-     * @param \Cartalyst\Sentinel\Roles\RoleRepositoryInterface               $roles
-     * @param \Cartalyst\Sentinel\Activations\ActivationRepositoryInterface   $activations
-     * @param \Illuminate\Contracts\Events\Dispatcher                         $dispatcher
+     * @param \Cartalyst\Sentinel\Users\UserRepositoryInterface $users
+     * @param \Cartalyst\Sentinel\Roles\RoleRepositoryInterface $roles
+     * @param \Cartalyst\Sentinel\Activations\ActivationRepositoryInterface $activations
+     * @param \Illuminate\Contracts\Events\Dispatcher $dispatcher
      *
      * @return void
      */
     public function __construct(
         PersistenceRepositoryInterface $persistences,
-        UserRepositoryInterface $users,
-        RoleRepositoryInterface $roles,
-        ActivationRepositoryInterface $activations,
-        Dispatcher $dispatcher
-    ) {
+        UserRepositoryInterface        $users,
+        RoleRepositoryInterface        $roles,
+        ActivationRepositoryInterface  $activations,
+        Dispatcher                     $dispatcher
+    )
+    {
         $this->users = $users;
 
         $this->roles = $roles;
@@ -158,16 +159,16 @@ class Sentinel
      * Registers a user. You may provide a callback to occur before the user
      * is saved, or provide a true boolean as a shortcut to activation.
      *
-     * @param array         $credentials
+     * @param array $credentials
      * @param bool|\Closure $callback
      *
+     * @return bool|\Cartalyst\Sentinel\Users\UserInterface
      * @throws \InvalidArgumentException
      *
-     * @return bool|\Cartalyst\Sentinel\Users\UserInterface
      */
     public function register(array $credentials, $callback = false)
     {
-        if (! $callback instanceof Closure && ! is_bool($callback)) {
+        if (!$callback instanceof Closure && !is_bool($callback)) {
             throw new InvalidArgumentException('You must provide a closure or a boolean.');
         }
 
@@ -175,7 +176,7 @@ class Sentinel
 
         $valid = $this->users->validForCreation($credentials);
 
-        if (! $valid) {
+        if (!$valid) {
             return false;
         }
 
@@ -209,21 +210,21 @@ class Sentinel
      *
      * @param mixed $user
      *
+     * @return bool
      * @throws \InvalidArgumentException
      *
-     * @return bool
      */
     public function activate($user): bool
     {
         if (is_string($user) || is_array($user)) {
             $users = $this->getUserRepository();
 
-            $method = 'findBy'.(is_string($user) ? 'Id' : 'Credentials');
+            $method = 'findBy' . (is_string($user) ? 'Id' : 'Credentials');
 
             $user = $users->{$method}($user);
         }
 
-        if (! $user instanceof UserInterface) {
+        if (!$user instanceof UserInterface) {
             throw new InvalidArgumentException('No valid user was provided.');
         }
 
@@ -245,26 +246,38 @@ class Sentinel
      */
     public function check()
     {
-        if (config('cartalyst.sentinel.auth_bridge.enabled')) {
-            return Auth::guard(config('cartalyst.sentinel.auth_bridge.guard'))->check();
-        }
-        
+        $authBridgeEnabled = config('cartalyst.sentinel.auth_bridge.enabled', false);
+        $authBridgeGuard = config('cartalyst.sentinel.auth_bridge.guard', 'web');
+
         if ($this->user !== null) {
             return $this->user;
         }
 
-        if (! $code = $this->persistences->check()) {
-            return false;
-        }
+        if (!$authBridgeEnabled) {
 
-        if (! $user = $this->persistences->findUserByPersistenceCode($code)) {
-            return false;
-        }
+            // Auth пока не умеет в Sentinel-way проверки, добавим позже!
 
-        if (! $this->cycleCheckpoints('check', $user)) {
-            return false;
-        }
+            if (!$code = $this->persistences->check()) {
+                return false;
+            }
 
+            if (!$user = $this->persistences->findUserByPersistenceCode($code)) {
+                return false;
+            }
+
+
+            if (!$this->cycleCheckpoints('check', $user)) {
+                return false;
+            }
+        } else {
+            if (!$user = Auth::guard($authBridgeGuard)->getUser()) {
+                return false;
+            }
+
+            if (!$this->cycleCheckpoints('check', $user)) {
+                return false;
+            }
+        }
         return $this->user = $user;
     }
 
@@ -287,15 +300,15 @@ class Sentinel
      */
     public function guest(): bool
     {
-        return ! $this->check();
+        return !$this->check();
     }
 
     /**
      * Authenticates a user, with "remember" flag.
      *
      * @param array|\Cartalyst\Sentinel\Users\UserInterface $credentials
-     * @param bool                                          $remember
-     * @param bool                                          $login
+     * @param bool $remember
+     * @param bool $login
      *
      * @return bool|\Cartalyst\Sentinel\Users\UserInterface
      */
@@ -314,19 +327,19 @@ class Sentinel
 
             $valid = $user !== null ? $this->users->validateCredentials($user, $credentials) : false;
 
-            if (! $valid) {
+            if (!$valid) {
                 $this->cycleCheckpoints('fail', $user, false);
 
                 return false;
             }
         }
 
-        if (! $this->cycleCheckpoints('login', $user)) {
+        if (!$this->cycleCheckpoints('login', $user)) {
             return false;
         }
 
         if ($login) {
-            if (! $user = $this->login($user, $remember)) {
+            if (!$user = $this->login($user, $remember)) {
                 return false;
             }
         }
@@ -352,7 +365,7 @@ class Sentinel
      * Forces an authentication to bypass checkpoints.
      *
      * @param array|\Cartalyst\Sentinel\Users\UserInterface $credentials
-     * @param bool                                          $remember
+     * @param bool $remember
      *
      * @return bool|\Cartalyst\Sentinel\Users\UserInterface
      */
@@ -457,9 +470,9 @@ class Sentinel
     /**
      * Sends a response when HTTP basic authentication fails.
      *
+     * @return mixed
      * @throws \RuntimeException
      *
-     * @return mixed
      */
     public function getBasicResponse()
     {
@@ -499,7 +512,7 @@ class Sentinel
      * Persists a login for the given user.
      *
      * @param \Cartalyst\Sentinel\Users\UserInterface $user
-     * @param bool                                    $remember
+     * @param bool $remember
      *
      * @return bool|\Cartalyst\Sentinel\Users\UserInterface
      */
@@ -511,7 +524,7 @@ class Sentinel
 
         $response = $this->users->recordLogin($user);
 
-        if (! $response) {
+        if (!$response) {
             return false;
         }
 
@@ -536,7 +549,7 @@ class Sentinel
      * Logs the current user out.
      *
      * @param \Cartalyst\Sentinel\Users\UserInterface|null $user
-     * @param bool                                         $everywhere
+     * @param bool $everywhere
      *
      * @return bool
      */
@@ -577,7 +590,7 @@ class Sentinel
      * Pass a closure to Sentinel to bypass checkpoints.
      *
      * @param \Closure $callback
-     * @param array    $checkpoints
+     * @param array $checkpoints
      *
      * @return mixed
      */
@@ -588,7 +601,7 @@ class Sentinel
         $activeCheckpoints = [];
 
         foreach (array_keys($originalCheckpoints) as $checkpoint) {
-            if ($checkpoints && ! in_array($checkpoint, $checkpoints)) {
+            if ($checkpoints && !in_array($checkpoint, $checkpoints)) {
                 $activeCheckpoints[$checkpoint] = $originalCheckpoints[$checkpoint];
             }
         }
@@ -648,7 +661,7 @@ class Sentinel
     /**
      * Add a new checkpoint to Sentinel.
      *
-     * @param string                                              $key
+     * @param string $key
      * @param \Cartalyst\Sentinel\Checkpoints\CheckpointInterface $checkpoint
      *
      * @return void
@@ -691,22 +704,22 @@ class Sentinel
      * may throw their own exceptions, however, if just one returns false,
      * the cycle fails.
      *
-     * @param string                                  $method
+     * @param string $method
      * @param \Cartalyst\Sentinel\Users\UserInterface $user
-     * @param bool                                    $halt
+     * @param bool $halt
      *
      * @return bool
      */
     protected function cycleCheckpoints(string $method, UserInterface $user = null, bool $halt = true): bool
     {
-        if (! $this->checkpointsStatus) {
+        if (!$this->checkpointsStatus) {
             return true;
         }
 
         foreach ($this->checkpoints as $checkpoint) {
             $response = $checkpoint->{$method}($user);
 
-            if (! $response && $halt) {
+            if (!$response && $halt) {
                 return false;
             }
         }
@@ -726,7 +739,7 @@ class Sentinel
         if (config('cartalyst.sentinel.auth_bridge.enabled')) {
             return Auth::guard(config('cartalyst.sentinel.auth_bridge.guard'))->user();
         }
-        
+
         if ($check && $this->user === null) {
             $this->check();
         }
@@ -902,11 +915,11 @@ class Sentinel
      * Dynamically pass missing methods to Sentinel.
      *
      * @param string $method
-     * @param array  $parameters
-     *
-     * @throws \BadMethodCallException
+     * @param array $parameters
      *
      * @return mixed
+     * @throws \BadMethodCallException
+     *
      */
     public function __call($method, $parameters)
     {
@@ -921,7 +934,7 @@ class Sentinel
         if (Str::startsWith($method, 'findUserBy')) {
             $user = $this->getUserRepository();
 
-            $method = 'findBy'.substr($method, 10);
+            $method = 'findBy' . substr($method, 10);
 
             return call_user_func_array([$user, $method], $parameters);
         }
@@ -929,7 +942,7 @@ class Sentinel
         if (Str::startsWith($method, 'findRoleBy')) {
             $roles = $this->getRoleRepository();
 
-            $method = 'findBy'.substr($method, 10);
+            $method = 'findBy' . substr($method, 10);
 
             return call_user_func_array([$roles, $method], $parameters);
         }
