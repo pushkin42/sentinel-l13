@@ -4,6 +4,7 @@ namespace Cartalyst\Sentinel\Guards;
 
 use Illuminate\Auth\SessionGuard;
 use Cartalyst\Sentinel\Sentinel;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 class SentinelSessionGuard extends SessionGuard
 {
@@ -17,14 +18,17 @@ class SentinelSessionGuard extends SessionGuard
 
     public function loginUsingId($id, $remember = false)
     {
-        if (!is_null($user = $this->provider->retrieveById($id))) {
-            $this->login($user, $remember);
-            $this->sentinel->login($user, $remember);
+        $user = $this->provider->retrieveById($id);
 
-            return $user;
-        }
+        if (!$user) return false;
 
-        return false;
+        return $this->login($user, $remember);
+    }
+
+    public function login(AuthenticatableContract $user, $remember = false)
+    {
+        parent::login($user, $remember);
+        return $this->sentinel->login($user, $remember);
     }
 
     public function user()
