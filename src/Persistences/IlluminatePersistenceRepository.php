@@ -61,9 +61,9 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface
      * Create a new Sentinel persistence repository.
      *
      * @param \Cartalyst\Sentinel\Sessions\SessionInterface $session
-     * @param \Cartalyst\Sentinel\Cookies\CookieInterface   $cookie
-     * @param string                                        $model
-     * @param bool                                          $single
+     * @param \Cartalyst\Sentinel\Cookies\CookieInterface $cookie
+     * @param string $model
+     * @param bool $single
      *
      * @return void
      */
@@ -187,5 +187,10 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface
                 $persistence->delete();
             }
         }
+    }
+
+    public function getPersistenceCodeFor(UserInterface $user): string
+    {
+        return $this->createModel()->newQuery()->where('user_id', $user->getUserId())->first()?->value('code');
     }
 }
