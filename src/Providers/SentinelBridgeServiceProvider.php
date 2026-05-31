@@ -1,5 +1,7 @@
 <?php
 
+namespace Sentinel\Providers;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
