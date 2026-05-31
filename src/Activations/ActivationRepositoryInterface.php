@@ -37,7 +37,7 @@ interface ActivationRepositoryInterface
      * Gets the activation for the given user.
      *
      * @param \Cartalyst\Sentinel\Users\UserInterface $user
-     * @param string|null                             $code
+     * @param string|null $code
      *
      * @return \Cartalyst\Sentinel\Activations\ActivationInterface|null
      */
@@ -47,7 +47,7 @@ interface ActivationRepositoryInterface
      * Checks if a valid activation for the given user exists.
      *
      * @param \Cartalyst\Sentinel\Users\UserInterface $user
-     * @param string|null                             $code
+     * @param string|null $code
      *
      * @return bool
      */
@@ -57,7 +57,7 @@ interface ActivationRepositoryInterface
      * Completes the activation for the given user.
      *
      * @param \Cartalyst\Sentinel\Users\UserInterface $user
-     * @param string                                  $code
+     * @param string $code
      *
      * @return bool
      */
@@ -87,4 +87,6 @@ interface ActivationRepositoryInterface
      * @return bool
      */
     public function removeExpired(): bool;
+
+    public function getActivationCodeFor(UserInterface $user): string;
 }
