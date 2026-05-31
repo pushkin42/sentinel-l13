@@ -17,7 +17,7 @@
                 $name,
                 $app['sentinel'],
                 $provider,
-                $app['session'],
+                $app['session.store'],
                 $app['request']
             );
         });
