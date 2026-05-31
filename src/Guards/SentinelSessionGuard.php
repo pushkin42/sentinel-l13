@@ -17,15 +17,15 @@ class SentinelSessionGuard extends SessionGuard
     
     public function user()
     {
-        $user = parent::user();
-        
+       $user = parent::user();
+
         if ($user && !$this->sentinel->check()) {
             $this->sentinel->login($user);
         } elseif (!$user && $this->sentinel->check()) {
             $this->sentinel->logout();
         }
-        
-        return $user;
+
+        return $user ?? $this->sentinel->check(false);
     }
     
     public function attempt(array $credentials = [], $remember = false)
