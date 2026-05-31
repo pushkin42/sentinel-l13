@@ -11,6 +11,17 @@
             );
         });
 
+        Auth::extend('sentinel-session', function ($app, $name, $config) {
+            $provider = Auth::createUserProvider($config['provider']);
+            return new SentinelSessionGuard(
+                $name,
+                $app['sentinel'],
+                $provider,
+                $app['session'],
+                $app['request']
+            );
+        });
+
 - Добавить в конфиг auth.php что-то типа:
 
             'guards' => [
@@ -19,7 +30,7 @@
                     'provider' => 'users',
                 ],
                 'sentinel-session' => [
-                    'driver' => 'session',
+                    'driver' => 'sentinel-session',
                     'provider' => 'sentinel',
                 ]
             ],
