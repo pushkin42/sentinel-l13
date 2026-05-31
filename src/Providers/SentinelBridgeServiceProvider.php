@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Cartalyst\Sentinel\Laravel\Auth\SentinelUserProvider;
 
-class SentinelAuthServiceProvider extends ServiceProvider
+class SentinelBridgeServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
