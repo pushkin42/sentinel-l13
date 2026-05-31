@@ -1,15 +1,19 @@
+<?php
+
+namespace Cartalyst\Sentinel\Providers;
+
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
-
-namespace Cartalyst\Sentinel\Providers;
 
 class SentinelUserProvider implements UserProvider
 {
     public function __construct(
         protected Hasher $hasher,
         protected string $model,
-    ) {}
+    )
+    {
+    }
 
     public function retrieveById($identifier): ?Authenticatable
     {
@@ -33,7 +37,7 @@ class SentinelUserProvider implements UserProvider
     {
         $credentials = array_filter(
             $credentials,
-            fn ($key) => ! str_contains($key, 'password'),
+            fn($key) => !str_contains($key, 'password'),
             ARRAY_FILTER_USE_KEY
         );
 
@@ -58,10 +62,11 @@ class SentinelUserProvider implements UserProvider
 
     public function rehashPasswordIfRequired(
         Authenticatable $user,
-        array $credentials,
-        bool $force = false
-    ): void {
-        if (! isset($credentials['password'])) {
+        array           $credentials,
+        bool            $force = false
+    ): void
+    {
+        if (!isset($credentials['password'])) {
             return;
         }
 
