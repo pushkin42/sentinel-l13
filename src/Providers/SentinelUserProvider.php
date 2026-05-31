@@ -35,23 +35,21 @@ class SentinelUserProvider implements UserProvider
 
     public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
+        $allowedFields = ['email', 'login', 'username'];
+        
         $credentials = array_filter(
             $credentials,
-            fn($key) => !str_contains($key, 'password'),
-            ARRAY_FILTER_USE_KEY
+            fn($key, $value) => in_array($key, $allowedFields) && !empty($value),
+            ARRAY_FILTER_USE_BOTH
         );
-
+        
         if (empty($credentials)) {
             return null;
         }
-
-        $query = $this->newModelQuery();
-
-        foreach ($credentials as $key => $value) {
-            $query->where($key, $value);
-        }
-
-        return $query->first();
+        
+        return $this->newModelQuery()
+            ->where($credentials)
+            ->first();
     }
 
     public function validateCredentials(Authenticatable $user, array $credentials): bool
