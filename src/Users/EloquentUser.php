@@ -37,12 +37,13 @@ use Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use Cartalyst\Sentinel\Persistences\PersistableInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 
 class EloquentUser extends Model implements
-      PermissibleInterface, PersistableInterface, RoleableInterface, UserInterface,
-      Authenticatable
+    PermissibleInterface, PersistableInterface, RoleableInterface, UserInterface,
+    Authenticatable
 {
-    use PermissibleTrait;
+    use PermissibleTrait, AuthenticableTrait;
 
     /**
      * The table associated with the model.
@@ -435,9 +436,9 @@ class EloquentUser extends Model implements
     {
         $isSoftDeletable = property_exists($this, 'forceDeleting');
 
-        $isSoftDeleted = $isSoftDeletable && ! $this->forceDeleting;
+        $isSoftDeleted = $isSoftDeletable && !$this->forceDeleting;
 
-        if ($this->exists && ! $isSoftDeleted) {
+        if ($this->exists && !$isSoftDeleted) {
             $this->activations()->delete();
             $this->persistences()->delete();
             $this->reminders()->delete();
@@ -452,7 +453,7 @@ class EloquentUser extends Model implements
      * Dynamically pass missing methods to the user.
      *
      * @param string $method
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return mixed
      */
