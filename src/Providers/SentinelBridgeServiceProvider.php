@@ -1,6 +1,6 @@
 <?php
 
-namespace Sentinel\Providers;
+namespace Cartalyst\Sentinel\Providers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
