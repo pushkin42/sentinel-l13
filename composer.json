@@ -63,7 +63,8 @@
         },
         "laravel": {
             "providers": [
-                "Cartalyst\\Sentinel\\Laravel\\SentinelServiceProvider"
+                "Cartalyst\\Sentinel\\Laravel\\SentinelServiceProvider",
+                "Cartalyst\\Sentinel\\Providers\\SentinelBridgeServiceProvider"
             ],
             "aliases": {
                 "Activation": "Cartalyst\\Sentinel\\Laravel\\Facades\\Activation",
