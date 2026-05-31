@@ -196,6 +196,6 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
         return $this->createModel()->newQuery()
             ->where('user_id', $user->getUserId())
             ->whereNotNull('code')
-            ->latest()->first();
+            ->latest()->first()->value('code');
     }
 }
