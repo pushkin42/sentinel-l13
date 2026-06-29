@@ -35,6 +35,16 @@ class SentinelSessionGuard extends SessionGuard
 
     public function user()
     {
+        $sentinelUser = $this->sentinel->getUser(false);
+
+        if ($sentinelUser) {
+            $user = $this->provider->retrieveById($sentinelUser->getAuthIdentifier());
+            if ($user) {
+                $this->setUser($user);
+                return $user;
+            }
+        }
+
         $user = parent::user();
 
         if ($user && !$this->sentinel->check()) {
@@ -43,7 +53,7 @@ class SentinelSessionGuard extends SessionGuard
             $this->sentinel->logout();
         }
 
-        return $user ?? $this->sentinel->check(false);
+        return $user;
     }
 
     public function attempt(array $credentials = [], $remember = false)
