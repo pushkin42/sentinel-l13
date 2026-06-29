@@ -725,27 +725,51 @@ class Sentinel
      *
      * @return \Cartalyst\Sentinel\Users\UserInterface|null
      */
-    public function getUser(bool $check = true): ?UserInterface
+   public function getUser(bool $check = true): ?UserInterface
     {
-
-        if (config('cartalyst.sentinel.auth_bridge.enabled')) {
-            $guard = config('cartalyst.sentinel.auth_bridge.guard');
-            $defGuard = config('auth.defaults.guard');
-
-            if ($guard === $defGuard) {
-                // если мост настроен уже на Sentinel, можно отдать напрямую
-                return $this->check($check);
-            }
-            $user = Auth::guard($guard)->user();
-            return ($user) ? $user : null;
-        }
-
-        if ($check && $this->user === null) {
-            $this->check();
-        }
-
+    // 1. Сначала проверяем кэш
+    if ($this->user !== null) {
         return $this->user;
     }
+
+    if (config('cartalyst.sentinel.auth_bridge.enabled')) {
+        $guard = config('cartalyst.sentinel.auth_bridge.guard');
+        $defGuard = config('auth.defaults.guard');
+
+        // 2. Защита от рекурсии!
+        static $resolving = false;
+        
+        if ($resolving) {
+            // Если уже в процессе - возвращаем null или кэш
+            return $this->user ?? null;
+        }
+
+        $resolving = true;
+        
+        try {
+            if ($guard === $defGuard) {
+                return $this->check($check);
+            }
+
+            $user = Auth::guard($guard)->user();
+            
+            // 3. Сохраняем в кэш
+            if ($user) {
+                $this->user = $user;
+            }
+            
+            return $user ?: null;
+        } finally {
+            $resolving = false;
+        }
+    }
+
+    if ($check && $this->user === null) {
+        $this->check();
+    }
+
+    return $this->user;
+}
 
     /**
      * Sets the user associated with Sentinel (does not log in).
