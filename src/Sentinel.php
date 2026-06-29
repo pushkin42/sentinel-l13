@@ -736,7 +736,8 @@ class Sentinel
                 // если мост настроен уже на Sentinel, можно отдать напрямую
                 return $this->check($check);
             }
-            return Auth::guard($guard)->user();
+            $user = Auth::guard($guard)->user();
+            return ($user) ? $user : null;
         }
 
         if ($check && $this->user === null) {
