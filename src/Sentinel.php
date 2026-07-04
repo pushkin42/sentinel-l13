@@ -748,7 +748,8 @@ class Sentinel
         
         try {
             if ($guard === $defGuard) {
-                return $this->check($check);
+                $check=$this->check($check);
+                return ($check)?:null;
             }
 
             $user = Auth::guard($guard)->user();
