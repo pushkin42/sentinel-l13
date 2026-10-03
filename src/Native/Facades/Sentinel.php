@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -45,7 +45,7 @@ class Sentinel
      *
      * @return void
      */
-    public function __construct(SentinelBootstrapper $bootstrapper = null)
+    public function __construct(?SentinelBootstrapper $bootstrapper = null)
     {
         if ($bootstrapper === null) {
             $bootstrapper = new SentinelBootstrapper();
@@ -71,7 +71,7 @@ class Sentinel
      *
      * @return \Cartalyst\Sentinel\Native\SentinelBootstrapper
      */
-    public static function instance(SentinelBootstrapper $bootstrapper = null)
+    public static function instance(?SentinelBootstrapper $bootstrapper = null)
     {
         if (static::$instance === null) {
             static::$instance = new static($bootstrapper);

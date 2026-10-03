@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -81,7 +81,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function get(UserInterface $user, string $code = null): ?ActivationInterface
+    public function get(UserInterface $user, ?string $code = null): ?ActivationInterface
     {
         $expires = $this->expires();
 
@@ -100,7 +100,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function exists(UserInterface $user, string $code = null): bool
+    public function exists(UserInterface $user, ?string $code = null): bool
     {
         return (bool)$this->get($user, $code);
     }
@@ -191,11 +191,12 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface
         return Str::random(32);
     }
 
-    public function getActivationCodeFor(UserInterface $user): string
+    public function getActivationCodeFor(UserInterface $user): ?string
     {
         return $this->createModel()->newQuery()
             ->where('user_id', $user->getUserId())
             ->whereNotNull('code')
-            ->latest()->first()->value('code');
+            ->latest()
+            ->value('code');
     }
 }

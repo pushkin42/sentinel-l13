@@ -24,8 +24,7 @@ class SentinelBridgeServiceProvider extends ServiceProvider
                 $name,
                 $app['sentinel'],
                 $provider,
-                $app['session.store'],
-                $app['request']
+                $app['events'],
             );
         });
     }

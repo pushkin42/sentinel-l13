@@ -1,6 +1,6 @@
 {
     "name": "pushkin42/sentinel-l13",
-    "description": "PHP 8.2+ Fully-featured Authentication & Authorization System",
+    "description": "PHP 8.3+ Fully-featured Authentication & Authorization System",
     "keywords": [
         "php",
         "cartalyst",
@@ -23,8 +23,9 @@
     ],
     "require": {
         "php": "^8.3",
-        "cartalyst/support": "^9.0",
-        "illuminate/support": "^13.0"
+        "cartalyst/support": "^10.0",
+        "illuminate/support": "^13.0",
+        "illuminate/auth": "^13.0"
     },
     "require-dev": {
         "cartalyst/php-cs-fixer-config": "^2.0",
@@ -59,7 +60,7 @@
     "extra": {
         "component": "package",
         "branch-alias": {
-            "dev-master": "8.0.x-dev"
+            "dev-master": "10.0.x-dev"
         },
         "laravel": {
             "providers": [

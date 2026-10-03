@@ -1,17 +1,35 @@
-## Перед использованием:
+## Настройка Laravel Auth bridge
 
-- Настроить конфиг авторизации на нужный провайдер (SentinelUserProvider из этого пакета)
-- Настроить cartalyst.sentinel.php так чтобы он ссылался на App\Models\User.php или что у вас там
+Модель пользователя должна наследовать `Cartalyst\Sentinel\Users\EloquentUser` либо одновременно реализовывать `Cartalyst\Sentinel\Users\UserInterface` и `Illuminate\Contracts\Auth\Authenticatable`.
 
-- Добавить в конфиг auth.php что-то типа:
+Добавьте guard и provider в `config/auth.php`:
 
-            'guards' => [
-                'web' => [
-                    'driver' => 'session',
-                    'provider' => 'users',
-                ],
-                'sentinel-session' => [
-                    'driver' => 'sentinel-session',
-                    'provider' => 'sentinel',
-                ]
-            ],
+```php
+'defaults' => [
+    'guard' => 'web',
+],
+
+'guards' => [
+    'web' => [
+        'driver' => 'sentinel-session',
+        'provider' => 'sentinel',
+    ],
+],
+
+'providers' => [
+    'sentinel' => [
+        'driver' => 'sentinel',
+        'model' => App\Models\User::class,
+    ],
+],
+```
+
+Укажите ту же модель в `config/cartalyst.sentinel.php`:
+
+```php
+'users' => [
+    'model' => App\Models\User::class,
+],
+```
+
+После этого `Sentinel`, `Auth`, `$request->user()`, middleware `auth` и Laravel policies используют одну Sentinel-сессию. Отдельная Laravel session guard запись не создаётся.

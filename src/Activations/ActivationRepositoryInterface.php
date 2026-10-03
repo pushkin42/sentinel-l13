@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -41,7 +41,7 @@ interface ActivationRepositoryInterface
      *
      * @return \Cartalyst\Sentinel\Activations\ActivationInterface|null
      */
-    public function get(UserInterface $user, string $code = null): ?ActivationInterface;
+    public function get(UserInterface $user, ?string $code = null): ?ActivationInterface;
 
     /**
      * Checks if a valid activation for the given user exists.
@@ -51,7 +51,7 @@ interface ActivationRepositoryInterface
      *
      * @return bool
      */
-    public function exists(UserInterface $user, string $code = null): bool;
+    public function exists(UserInterface $user, ?string $code = null): bool;
 
     /**
      * Completes the activation for the given user.

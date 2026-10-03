@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -35,6 +35,13 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface
      * @var bool
      */
     protected $single = false;
+
+    /**
+     * Indicates that the current persistence code was restored from a cookie.
+     *
+     * @var bool
+     */
+    protected $viaRemember = false;
 
     /**
      * Session storage driver.
@@ -67,7 +74,7 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface
      *
      * @return void
      */
-    public function __construct(SessionInterface $session, CookieInterface $cookie, string $model = null, bool $single = false)
+    public function __construct(SessionInterface $session, CookieInterface $cookie, ?string $model = null, bool $single = false)
     {
         $this->model = $model;
 
@@ -84,12 +91,18 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface
     public function check(): ?string
     {
         if ($code = $this->session->get()) {
+            $this->viaRemember = false;
+
             return $code;
         }
 
         if ($code = $this->cookie->get()) {
+            $this->viaRemember = true;
+
             return $code;
         }
+
+        $this->viaRemember = false;
 
         return null;
     }
@@ -189,8 +202,15 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface
         }
     }
 
-    public function getPersistenceCodeFor(UserInterface $user): string
+    public function getPersistenceCodeFor(UserInterface $user): ?string
     {
-        return $this->createModel()->newQuery()->where('user_id', $user->getUserId())->first()?->value('code');
+        return $this->createModel()->newQuery()
+            ->where('user_id', $user->getUserId())
+            ->value('code');
+    }
+
+    public function viaRemember(): bool
+    {
+        return $this->viaRemember;
     }
 }

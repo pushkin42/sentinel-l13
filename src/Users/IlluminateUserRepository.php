@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -55,7 +55,7 @@ class IlluminateUserRepository implements UserRepositoryInterface
      *
      * @return void
      */
-    public function __construct(HasherInterface $hasher, Dispatcher $dispatcher = null, string $model = null)
+    public function __construct(HasherInterface $hasher, ?Dispatcher $dispatcher = null, ?string $model = null)
     {
         $this->hasher = $hasher;
 
@@ -173,7 +173,7 @@ class IlluminateUserRepository implements UserRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(array $credentials, Closure $callback = null): ?UserInterface
+    public function create(array $credentials, ?Closure $callback = null): ?UserInterface
     {
         $user = $this->createModel();
 
@@ -326,7 +326,7 @@ class IlluminateUserRepository implements UserRepositoryInterface
      *
      * @return bool
      */
-    protected function validateUser(array $credentials, int $id = null): bool
+    protected function validateUser(array $credentials, ?int $id = null): bool
     {
         $instance = $this->createModel();
 

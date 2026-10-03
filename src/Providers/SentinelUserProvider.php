@@ -39,7 +39,7 @@ class SentinelUserProvider implements UserProvider
         
         $credentials = array_filter(
             $credentials,
-            fn($key, $value) => in_array($key, $allowedFields) && !empty($value),
+            fn($value, $key) => in_array($key, $allowedFields, true) && !empty($value),
             ARRAY_FILTER_USE_BOTH
         );
         

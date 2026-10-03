@@ -11,6 +11,17 @@
 
 ## Основной пакет
 
-Форк взят отсюда: https://github.com/cartalyst/sentinel
+Форк основан на https://github.com/cartalyst/sentinel и синхронизирован с веткой 10.x.
 
-Спасибо этому доброму человеку, но пришло время немного развивать и дорабатывать этот пакет.
+Laravel Auth bridge предоставляет стандартные `Auth`, `$request->user()`, middleware и policies поверх единого состояния Sentinel.
+
+## Совместимость
+
+Version | Laravel | PHP Version
+------- | ------- | -----------
+10.x | 13.0 | >= 8.3
+
+
+## Laravel Auth bridge
+
+Настройка приведена в [preinstall.md](preinstall.md). Sentinel остаётся единственным владельцем состояния авторизации, а Laravel guard предоставляет второй совместимый API. Поэтому вызовы `Auth::login()` видны через `Sentinel::getUser()`, а вход через Sentinel виден через `Auth::user()` без взаимной рекурсии и двух параллельных сессий.

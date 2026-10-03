@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -106,7 +106,7 @@ interface UserRepositoryInterface
      *
      * @return \Cartalyst\Sentinel\Users\UserInterface|null
      */
-    public function create(array $credentials, Closure $callback = null): ?UserInterface;
+    public function create(array $credentials, ?Closure $callback = null): ?UserInterface;
 
     /**
      * Updates a user.

@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -94,5 +94,10 @@ interface PersistenceRepositoryInterface
      */
     public function flush(PersistableInterface $persistable, bool $forget = true): void;
 
-    public function getPersistenceCodeFor(UserInterface $user): string;
+    public function getPersistenceCodeFor(UserInterface $user): ?string;
+
+    /**
+     * Determine whether the current persistence code came from the remember cookie.
+     */
+    public function viaRemember(): bool;
 }

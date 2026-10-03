@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -60,7 +60,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface
      *
      * @return void
      */
-    public function __construct(UserRepositoryInterface $users, string $model = null, int $expires = null)
+    public function __construct(UserRepositoryInterface $users, ?string $model = null, ?int $expires = null)
     {
         $this->users = $users;
 
@@ -93,7 +93,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function get(UserInterface $user, string $code = null)
+    public function get(UserInterface $user, ?string $code = null)
     {
         $expires = $this->expires();
 
@@ -115,7 +115,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function exists(UserInterface $user, string $code = null): bool
+    public function exists(UserInterface $user, ?string $code = null): bool
     {
         return (bool) $this->get($user, $code);
     }

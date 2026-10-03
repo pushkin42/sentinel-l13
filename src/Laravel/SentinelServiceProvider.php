@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -60,7 +60,6 @@ class SentinelServiceProvider extends ServiceProvider
         $this->registerCheckpoints();
         $this->registerReminders();
         $this->registerSentinel();
-        $this->setUserResolver();
     }
 
     /**
@@ -429,20 +428,6 @@ class SentinelServiceProvider extends ServiceProvider
     protected function configHitsLottery(array $lottery)
     {
         return mt_rand(1, $lottery[1]) <= $lottery[0];
-    }
-
-    /**
-     * Sets the user resolver on the request class.
-     *
-     * @return void
-     */
-    protected function setUserResolver()
-    {
-        $this->app->rebinding('request', function ($app, $request) {
-            $request->setUserResolver(function () use ($app) {
-                return $app['sentinel']->getUser();
-            });
-        });
     }
 
     /**

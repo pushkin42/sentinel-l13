@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -57,5 +57,5 @@ interface ThrottleRepositoryInterface
      *
      * @return void
      */
-    public function log($ipAddress = null, UserInterface $user = null);
+    public function log($ipAddress = null, ?UserInterface $user = null);
 }

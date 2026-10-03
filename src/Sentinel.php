@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Sentinel
- * @version    9.0.0
+ * @version    10.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2025, Cartalyst LLC
+ * @copyright  (c) 2011-2026, Cartalyst LLC
  * @link       https://cartalyst.com
  */
 
@@ -35,7 +35,6 @@ use Cartalyst\Sentinel\Reminders\ReminderRepositoryInterface;
 use Cartalyst\Sentinel\Throttling\ThrottleRepositoryInterface;
 use Cartalyst\Sentinel\Activations\ActivationRepositoryInterface;
 use Cartalyst\Sentinel\Persistences\PersistenceRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
 
 class Sentinel
 {
@@ -246,9 +245,6 @@ class Sentinel
      */
     public function check()
     {
-//        $authBridgeEnabled = config('cartalyst.sentinel.auth_bridge.enabled', false);
-//        $authBridgeGuard = config('cartalyst.sentinel.auth_bridge.guard', 'web');
-
         if ($this->user !== null) {
             return $this->user;
         }
@@ -544,7 +540,7 @@ class Sentinel
      *
      * @return bool
      */
-    public function logout(UserInterface $user = null, bool $everywhere = false): bool
+    public function logout(?UserInterface $user = null, bool $everywhere = false): bool
     {
         $currentUser = $this->check();
 
@@ -701,7 +697,7 @@ class Sentinel
      *
      * @return bool
      */
-    protected function cycleCheckpoints(string $method, UserInterface $user = null, bool $halt = true): bool
+    protected function cycleCheckpoints(string $method, ?UserInterface $user = null, bool $halt = true): bool
     {
         if (!$this->checkpointsStatus) {
             return true;
@@ -725,52 +721,14 @@ class Sentinel
      *
      * @return \Cartalyst\Sentinel\Users\UserInterface|null
      */
-   public function getUser(bool $check = true): ?UserInterface
+    public function getUser(bool $check = true): ?UserInterface
     {
-    // 1. Сначала проверяем кэш
-    if ($this->user !== null) {
+        if ($check && $this->user === null) {
+            $this->check();
+        }
+
         return $this->user;
     }
-
-    if (config('cartalyst.sentinel.auth_bridge.enabled')) {
-        $guard = config('cartalyst.sentinel.auth_bridge.guard');
-        $defGuard = config('auth.defaults.guard');
-
-        // 2. Защита от рекурсии!
-        static $resolving = false;
-        
-        if ($resolving) {
-            // Если уже в процессе - возвращаем null или кэш
-            return $this->user ?? null;
-        }
-
-        $resolving = true;
-        
-        try {
-            if ($guard === $defGuard) {
-                $check=$this->check($check);
-                return ($check)?:null;
-            }
-
-            $user = Auth::guard($guard)->user();
-            
-            // 3. Сохраняем в кэш
-            if ($user) {
-                $this->user = $user;
-            }
-            
-            return $user ?: null;
-        } finally {
-            $resolving = false;
-        }
-    }
-
-    if ($check && $this->user === null) {
-        $this->check();
-    }
-
-    return $this->user;
-}
 
     /**
      * Sets the user associated with Sentinel (does not log in).
